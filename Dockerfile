@@ -1,12 +1,6 @@
 FROM berngp/docker-zabbix
 MAINTAINER Sebastiaan Renkens <sebastiaan.renkens@ordina.nl>
 
-# Added to overcome strange error: Rpmdb checksum is invalid: dCDPT(pkg checksums)
-# https://bugzilla.redhat.com/show_bug.cgi?id=1213602#c13
-# RUN touch /var/lib/rpm/*
-
-
-
 # Refresh
 RUN yum makecache
 
@@ -19,17 +13,10 @@ RUN yum -y install php-pear-Mail
 # YUM Cleanup
 RUN yum clean all && rm -rf /tmp/*
 
-
-
-
 # Install curl version with openssl instead of NSS to enable TLS 1.1 and TLS 1.2 support
 COPY ./rpms/curl-7.19.7-41.perk.el6.x86_64.rpm /tmp/curl-7.19.7-41.perk.el6.x86_64.rpm
 COPY ./rpms/libcurl-7.19.7-41.perk.el6.x86_64.rpm /tmp/libcurl-7.19.7-41.perk.el6.x86_64.rpm
 RUN rpm -Uvh --force /tmp/curl-7.19.7-41.perk.el6.x86_64.rpm /tmp/libcurl-7.19.7-41.perk.el6.x86_64.rpm
-
-
-
-
 
 # Add extra trusted root certificates to /etc/pki/tls/certs/ca-bundle.crt
 COPY ./pki/trusted-certs /tmp/trusted-certs
